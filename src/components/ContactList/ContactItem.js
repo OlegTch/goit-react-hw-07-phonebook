@@ -1,12 +1,18 @@
-import { useDispatch } from 'react-redux';
-import { contactsActions } from '../../redux/phonebook/phonebook-actions';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { contactOperations } from '../../redux/phonebook/phonebook-operations';
+// import { contactsActions } from '../../redux/phonebook/phonebook-actions';
+import { getLoader } from '../../redux/phonebook/phonebook-selector';
+import Loader from '../Loader/Loader';
+
 import PropTypes from 'prop-types';
 import styles from './ContactList.module.css';
 
 const ContactItem = ({ id, name, number }) => {
   const dispatch = useDispatch();
+  // const loading = useSelector(getLoader);
 
-  const onDeleteContact = idx => dispatch(contactsActions.deleteContact(idx));
+  const onDeleteContact = idx => dispatch(contactOperations.deleteContact(idx));
 
   return (
     <li className={styles.contactsItem} id={id}>
@@ -17,6 +23,7 @@ const ContactItem = ({ id, name, number }) => {
         type="button"
         onClick={() => onDeleteContact(id)}
       >
+        {/* {loading && <Loader height={2} width={2} />} */}
         Delete
       </button>
     </li>

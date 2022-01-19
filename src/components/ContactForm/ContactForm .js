@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { contactsActions } from '../../redux/phonebook/phonebook-actions';
+import { contactOperations } from '../../redux/phonebook/phonebook-operations';
 import { getContactsItems } from '../../redux/phonebook/phonebook-selector';
 import styles from './ContactForm.module.css';
 import { nanoid } from 'nanoid';
+
+import { toast } from 'react-toastify';
 
 function ContactForm() {
   const [name, setName] = useState('');
@@ -48,21 +50,22 @@ function ContactForm() {
       contact => name.toLowerCase() === contact.name.toLowerCase(),
     );
     const checkContactsNumber = contacts.find(
-      contact => number.toLowerCase() === contact.number.toLowerCase(),
+      contact => number.toLowerCase() === contact.phone.toLowerCase(),
     );
     if (checkContactsName) {
       return onError(`${checkContactsName.name}`);
     }
     if (checkContactsNumber) {
-      return onError(`${checkContactsNumber.number}`);
+      return onError(`${checkContactsNumber.phone}`);
     }
 
-    dispatch(contactsActions.addContact(name, number));
+    dispatch(contactOperations.addContact(name, number));
   };
 
   const onError = checkContacts => {
     const message = `${checkContacts} is already in contacts`;
-    alert(message);
+    toast.warning(message);
+    // alert(message);
   };
 
   return (
