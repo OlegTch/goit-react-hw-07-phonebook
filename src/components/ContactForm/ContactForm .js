@@ -59,13 +59,12 @@ function ContactForm() {
       return onError(`${checkContactsNumber.phone}`);
     }
 
-    dispatch(contactOperations.addContact(name, number));
+    dispatch(contactOperations.addContact({ name, phone: number }));
   };
 
   const onError = checkContacts => {
     const message = `${checkContacts} is already in contacts`;
     toast.warning(message);
-    // alert(message);
   };
 
   return (

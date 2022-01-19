@@ -1,50 +1,45 @@
 import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
 import { contactsActions } from './phonebook-actions';
-// import { deleteError } from '../../helpers/errors';
-// import dataContacts from '../../data/contacts.json';
 import { toast } from 'react-toastify';
 
-const {
-  fetchContactRequest,
-  fetchContactSuccess,
-  fetchContactError,
-  addContactRequest,
-  addContactSuccess,
-  addContactError,
-  deleteContactRequest,
-  deleteContactSuccess,
-  deleteContactError,
-  changeFilter,
-} = contactsActions;
+import { contactOperations } from './phonebook-operations';
+
+const { fetchContacts, addContact, deleteContact } = contactOperations;
+const { changeFilter } = contactsActions;
 
 const items = createReducer([], {
-  [fetchContactSuccess]: (_, { payload }) => payload,
-  [addContactSuccess]: (state, { payload }) => [...state, payload],
-  [deleteContactSuccess]: (state, { payload }) =>
-    state.filter(contact => contact.id !== payload),
+  [fetchContacts.fulfilled]: (_, { payload }) => payload,
+  [addContact.fulfilled]: (state, { payload }) => {
+    console.log(state);
+    return [...state, payload];
+  },
+
+  [deleteContact.fulfilled]: (state, { payload }) => {
+    console.log(payload);
+    return state.filter(contact => contact.id !== payload.id);
+  },
 });
 
 const loading = createReducer(false, {
-  [fetchContactRequest]: () => true,
-  [fetchContactSuccess]: () => false,
-  [fetchContactError]: () => false,
-  [addContactRequest]: () => true,
-  [addContactSuccess]: () => false,
-  [addContactError]: () => false,
-  [deleteContactRequest]: () => true,
-  [deleteContactSuccess]: () => false,
-  [deleteContactError]: () => false,
+  [fetchContacts.pending]: () => true,
+  [fetchContacts.fulfilled]: () => false,
+  [fetchContacts.rejected]: () => false,
+  [addContact.pending]: () => true,
+  [addContact.fulfilled]: () => false,
+  [addContact.rejected]: () => false,
+  [deleteContact.pending]: () => true,
+  [deleteContact.fulfilled]: () => false,
+  [deleteContact.rejected]: () => false,
 });
 
 const error = createReducer(null, {
-  [fetchContactError]: (_, action) => toast.error('contact fetch error'),
-  [fetchContactRequest]: () => null,
-  [addContactError]: (_, action) => toast.error('add delete error'),
-  [addContactRequest]: () => null,
-  [deleteContactError]: (_, action) => toast.error('contact delete error'),
-  [deleteContactRequest]: () => null,
-  // [deleteContactError]: (_, action) => alert('DELETE ERROR'),
+  [fetchContacts.rejected]: (_, action) => toast.error('contact fetch error'),
+  [fetchContacts.pending]: () => null,
+  [addContact.rejected]: (_, action) => toast.error('add delete error'),
+  [addContact.pending]: () => null,
+  [deleteContact.rejected]: (_, action) => toast.error('contact delete error'),
+  [deleteContact.pending]: () => null,
 });
 
 const filter = createReducer('', {
